@@ -1,0 +1,601 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Carbón vs Energía Mareomotriz</title>
+
+<style>
+
+:root{
+--coal:#ef4444;
+--ocean:#0ea5e9;
+--dark:#0f172a;
+--card:rgba(255,255,255,.9);
+}
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Segoe UI',sans-serif;
+}
+
+body{
+background:linear-gradient(-45deg,#0f172a,#1e3a8a,#0ea5e9,#06b6d4);
+background-size:400% 400%;
+animation:bgMove 15s ease infinite;
+color:#111;
+min-height:100vh;
+}
+
+@keyframes bgMove{
+0%{background-position:0% 50%;}
+50%{background-position:100% 50%;}
+100%{background-position:0% 50%;}
+}
+
+header{
+text-align:center;
+padding:50px 20px;
+color:white;
+}
+
+header h1{
+font-size:3rem;
+margin-bottom:10px;
+}
+
+header p{
+font-size:1.2rem;
+opacity:.9;
+}
+
+.container{
+width:90%;
+max-width:1300px;
+margin:auto;
+padding-bottom:40px;
+}
+
+.cards{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(350px,1fr));
+gap:25px;
+}
+
+.card{
+background:var(--card);
+backdrop-filter:blur(10px);
+border-radius:25px;
+padding:30px;
+box-shadow:0 15px 40px rgba(0,0,0,.2);
+transition:.4s;
+}
+
+.card:hover{
+transform:translateY(-8px);
+}
+
+.coal{
+border-top:8px solid var(--coal);
+}
+
+.tide{
+border-top:8px solid var(--ocean);
+}
+
+.card h2{
+margin-bottom:15px;
+}
+
+.card p{
+line-height:1.7;
+}
+
+ul{
+margin-left:20px;
+margin-top:15px;
+}
+
+li{
+margin-bottom:10px;
+}
+
+.simulator{
+margin-top:25px;
+padding:20px;
+background:#f8fafc;
+border-radius:15px;
+text-align:center;
+}
+
+button{
+padding:12px 18px;
+border:none;
+border-radius:12px;
+cursor:pointer;
+font-weight:bold;
+margin:8px;
+transition:.3s;
+}
+
+button:hover{
+transform:scale(1.05);
+}
+
+.btn-coal{
+background:var(--coal);
+color:white;
+}
+
+.btn-ocean{
+background:var(--ocean);
+color:white;
+}
+
+.factory{
+height:140px;
+position:relative;
+margin-bottom:15px;
+}
+
+.chimney{
+width:50px;
+height:90px;
+background:#555;
+margin:auto;
+border-radius:5px;
+}
+
+.smoke{
+position:absolute;
+left:50%;
+top:10px;
+width:25px;
+height:25px;
+background:#aaa;
+border-radius:50%;
+opacity:0;
+}
+
+.active .smoke{
+animation:smoke 3s infinite;
+}
+
+.smoke:nth-child(2){animation-delay:.5s;}
+.smoke:nth-child(3){animation-delay:1s;}
+
+@keyframes smoke{
+0%{
+transform:translateX(-50%) translateY(0);
+opacity:1;
+}
+100%{
+transform:translateX(-80px) translateY(-120px) scale(2);
+opacity:0;
+}
+}
+
+.water{
+height:140px;
+background:#dbeafe;
+border-radius:15px;
+overflow:hidden;
+position:relative;
+margin-bottom:15px;
+}
+
+.level{
+position:absolute;
+bottom:0;
+width:100%;
+height:25%;
+background:linear-gradient(#38bdf8,#0284c7);
+transition:1s;
+}
+
+.level::before{
+content:"";
+position:absolute;
+width:200%;
+height:30px;
+top:-10px;
+left:0;
+background:
+radial-gradient(circle at 20px 15px,
+rgba(255,255,255,.8) 12px,
+transparent 13px);
+animation:wave 3s linear infinite;
+}
+
+@keyframes wave{
+to{
+transform:translateX(-50%);
+}
+}
+
+.stats{
+margin-top:40px;
+background:rgba(255,255,255,.95);
+padding:30px;
+border-radius:25px;
+box-shadow:0 15px 40px rgba(0,0,0,.15);
+}
+
+.bar{
+height:30px;
+background:#e5e7eb;
+border-radius:20px;
+overflow:hidden;
+margin-bottom:20px;
+}
+
+.fill{
+height:100%;
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:bold;
+color:white;
+}
+
+.coal-bar{
+width:95%;
+background:var(--coal);
+}
+
+.tide-bar{
+width:10%;
+background:var(--ocean);
+}
+
+.compare{
+margin-top:40px;
+background:white;
+padding:30px;
+border-radius:25px;
+text-align:center;
+}
+
+.scale{
+font-size:90px;
+display:flex;
+justify-content:center;
+align-items:center;
+gap:40px;
+margin:20px 0;
+}
+
+.left{
+transform:translateY(25px);
+transition:.5s;
+}
+
+.right{
+transform:translateY(-25px);
+transition:.5s;
+}
+
+.trivia{
+margin-top:40px;
+background:white;
+padding:30px;
+border-radius:25px;
+}
+
+.question{
+margin-bottom:30px;
+}
+
+.option{
+width:100%;
+text-align:left;
+background:#f3f4f6;
+}
+
+.option:hover{
+background:#dbeafe;
+}
+
+.score{
+font-size:1.4rem;
+font-weight:bold;
+color:#16a34a;
+margin-bottom:20px;
+}
+
+footer{
+text-align:center;
+padding:40px;
+color:white;
+}
+
+#co2{
+font-size:2rem;
+font-weight:bold;
+color:var(--coal);
+margin-top:15px;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>⚡ Carbón vs Energía Mareomotriz 🌊</h1>
+<p>¿Qué fuente energética es mejor para el futuro?</p>
+</header>
+
+<div class="container">
+
+<div class="cards">
+
+<div class="card coal">
+
+<h2>🪨 Energía a Base de Carbón</h2>
+
+<p>
+El carbón se quema para generar vapor que mueve turbinas eléctricas.
+Es una tecnología eficiente pero altamente contaminante.
+</p>
+
+<ul>
+<li>❌ No renovable</li>
+<li>❌ Emite grandes cantidades de CO₂</li>
+<li>❌ Contamina aire y agua</li>
+<li>✅ Producción constante</li>
+</ul>
+
+<div class="simulator" id="coalPlant">
+
+<h3>🔥 Central Térmica</h3>
+
+<div class="factory">
+<div class="chimney"></div>
+<div class="smoke"></div>
+<div class="smoke"></div>
+<div class="smoke"></div>
+</div>
+
+<button class="btn-coal" onclick="coalOn()">
+Encender Planta
+</button>
+
+<button onclick="coalOff()">
+Apagar
+</button>
+
+<div id="co2">CO₂: 0 kg</div>
+
+</div>
+
+</div>
+
+<div class="card tide">
+
+<h2>🌊 Energía Mareomotriz</h2>
+
+<p>
+Aprovecha el movimiento natural de las mareas para generar electricidad.
+Es una fuente limpia, renovable y muy predecible.
+</p>
+
+<ul>
+<li>✅ Renovable</li>
+<li>✅ Muy baja emisión de CO₂</li>
+<li>✅ Energía limpia</li>
+<li>⚠️ Requiere zonas costeras adecuadas</li>
+</ul>
+
+<div class="simulator">
+
+<h3>🌊 Simulador de Mareas</h3>
+
+<div class="water">
+<div id="water" class="level"></div>
+</div>
+
+<button class="btn-ocean" onclick="highTide()">
+Marea Alta
+</button>
+
+<button onclick="lowTide()">
+Marea Baja
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="stats">
+
+<h2>📊 Impacto Ambiental</h2>
+
+<p>Emisiones de carbono</p>
+
+<div class="bar">
+<div class="fill coal-bar">Carbón</div>
+</div>
+
+<div class="bar">
+<div class="fill tide-bar">Mareomotriz</div>
+</div>
+
+</div>
+
+<div class="compare">
+
+<h2>⚖️ Comparación Final</h2>
+
+<div class="scale">
+
+<div id="coalSide">🪨</div>
+
+<div>⚖️</div>
+
+<div id="tideSide">🌊</div>
+
+</div>
+
+<button class="btn-ocean" onclick="showWinner()">
+Ver Resultado
+</button>
+
+<p id="result" style="margin-top:20px;font-size:1.2rem;"></p>
+
+</div>
+
+<div class="trivia">
+
+<h2>🧠 Trivia</h2>
+
+<div class="score">
+Puntaje: <span id="score">0</span>/3
+</div>
+
+<div class="question">
+<p><b>¿Qué provoca las mareas?</b></p>
+
+<button class="option" onclick="answer(this,true)">
+La gravedad de la Luna y el Sol
+</button>
+
+<button class="option" onclick="answer(this,false)">
+El viento
+</button>
+
+<button class="option" onclick="answer(this,false)">
+La temperatura
+</button>
+</div>
+
+<div class="question">
+<p><b>¿Qué energía es renovable?</b></p>
+
+<button class="option" onclick="answer(this,false)">
+Carbón
+</button>
+
+<button class="option" onclick="answer(this,true)">
+Mareomotriz
+</button>
+</div>
+
+<div class="question">
+<p><b>¿Qué combustible genera más CO₂?</b></p>
+
+<button class="option" onclick="answer(this,true)">
+Carbón
+</button>
+
+<button class="option" onclick="answer(this,false)">
+Mareomotriz
+</button>
+</div>
+
+</div>
+
+</div>
+
+<footer>
+Proyecto de Física • Energías Renovables
+</footer>
+
+<script>
+
+let emissions = 0;
+let interval;
+let score = 0;
+
+function coalOn(){
+
+document.getElementById("coalPlant")
+.classList.add("active");
+
+clearInterval(interval);
+
+interval = setInterval(()=>{
+
+emissions += 15;
+
+document.getElementById("co2")
+.textContent = "CO₂: " + emissions + " kg";
+
+},1000);
+
+}
+
+function coalOff(){
+
+document.getElementById("coalPlant")
+.classList.remove("active");
+
+clearInterval(interval);
+
+}
+
+function highTide(){
+
+document.getElementById("water")
+.style.height="90%";
+
+}
+
+function lowTide(){
+
+document.getElementById("water")
+.style.height="20%";
+
+}
+
+function showWinner(){
+
+document.getElementById("coalSide")
+.classList.add("left");
+
+document.getElementById("tideSide")
+.classList.add("right");
+
+document.getElementById("result")
+.innerHTML =
+"✅ La energía mareomotriz resulta más sostenible porque es renovable y tiene una huella de carbono muy baja.";
+
+}
+
+function answer(btn, correct){
+
+const group =
+btn.parentElement.querySelectorAll("button");
+
+group.forEach(b=>b.disabled=true);
+
+if(correct){
+
+btn.style.background="#22c55e";
+btn.style.color="white";
+
+score++;
+
+document.getElementById("score")
+.textContent = score;
+
+}else{
+
+btn.style.background="#ef4444";
+btn.style.color="white";
+
+}
+
+}
+
+</script>
+
+</body>
+</html>
+
